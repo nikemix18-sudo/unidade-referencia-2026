@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  backend:
+    image: python:3.11
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: bash -c "pip install django djangorestframework pillow psycopg2-binary && django-admin startproject config . && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  frontend:
+    image: node:20
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: bash -c "npx create-react-app . && npm start"
+    ports:
+      - "3000:3000"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: unidade
+      POSTGRES_USER: unidade
+      POSTGRES_PASSWORD: unidade123
+    ports:
+      - "5432:5432"
